@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: eureka-server
+
+# 2. Specifies that the Eureka server will run on port 8761.
+#    By default, Eureka servers typically run on this port.
+
+server:
+  port: 8761
+
+# 3. Tells the application not to register itself with another Eureka server.
+#    Since this is a Eureka server, it does not need to register itself as a client.
+#    It is a standalone server, so it maintains its own registry and does not fetch the service registry.
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+# 4. Disables logging for the Netflix Eureka and Netflix Discovery packages
+#    to reduce log verbosity in production.
+
+logging:
+  level:
+    com.netflix.eureka: OFF
+    com.netflix.discovery: OFF
+
+#
+#
