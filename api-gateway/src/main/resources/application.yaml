@@ -1,0 +1,27 @@
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+
+spring:
+  application:
+    name: gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # default false
+
+      routes:
+        - id: inventory-service
+          uri: lb://inventory-service  # lb:// indicates service discovery through Eureka
+          predicates:
+            - Path=/inventory/**
+          filters:
+            - RewritePath=/inventory/(?<segment>.*), /api/products/${segment}

@@ -2,6 +2,7 @@ spring:
   application:
     name: eureka-server
 
+
 # 2. Specifies that the Eureka server will run on port 8761.
 #    By default, Eureka servers typically run on this port.
 

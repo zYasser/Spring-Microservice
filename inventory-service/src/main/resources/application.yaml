@@ -1,17 +1,13 @@
 
-
 server:
   port: 0
 
-
-spring :
+spring:
   application:
     name: inventory-service
-
-    data:
-      mongodb:
-        host: localhost
-        uri: mongodb://backendUser:backendUser@localhost:27017/inventory
+  data:
+    mongodb:
+      uri: mongodb://backendUser:backendUser@localhost:27017/inventory
 
 
 
