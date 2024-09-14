@@ -3,6 +3,7 @@ package com.microservice.inventory_service.controller;
 
 import com.microservice.inventory_service.entity.Product;
 import com.microservice.inventory_service.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
+@Slf4j
 public class ProductController {
+    int attempted =0;
+
 
     @Autowired
     private ProductRepository productRepository;
@@ -27,8 +31,10 @@ public class ProductController {
 
     // Read (all)
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Product>> getAllProducts() throws InterruptedException {
+        log.info("Received A Request Attempted:{}", ++attempted );
         List<Product> products = productRepository.findAll();
+        log.info("Request is finished");
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

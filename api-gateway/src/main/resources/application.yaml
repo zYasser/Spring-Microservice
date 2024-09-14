@@ -8,9 +8,25 @@ management:
         include: '*'
 
 
+resilience4j:
+  circuitbreaker:
+    configs:
+      inventory-service:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  timelimiter:
+    instances:
+      inventory-service:
+        timeoutDuration: 1s
 spring:
   application:
     name: gateway
+
 
   cloud:
     gateway:
@@ -19,9 +35,28 @@ spring:
           enabled: true  # default false
 
       routes:
-        - id: inventory-service
-          uri: lb://inventory-service  # lb:// indicates service discovery through Eureka
-          predicates:
+         - id: get-all
+           uri: lb://inventory-service
+           predicates:
+             - Path=/inventory
+
+           filters:
+             - RewritePath=/inventory, /api/products
+             - name: CircuitBreaker
+               args:
+                 name: inventory-service
+                 fallbackUri : forward:/fallback/inventory
+             - name: Retry
+               args:
+                 retries: 3
+                 statuses: INTERNAL_SERVER_ERROR
+                 methods: GET
+
+
+
+         - id: inventory-service
+           uri: lb://inventory-service  # lb:// indicates service discovery through Eureka
+           predicates:
             - Path=/inventory/**
-          filters:
-            - RewritePath=/inventory/(?<segment>.*), /api/products/${segment}
+           filters:
+            - RewritePath=/inventory(/|$)(?<segment>.*), /api/products/${segment}
