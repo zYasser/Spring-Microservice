@@ -21,36 +21,19 @@ public class ProductService
 		this.productRepository = productRepository;
 	}
 
-	public BaseResponse<Boolean> updateStock(String id, OrderDto orderDTO) {
-		try {
-			Product product = findProductById(id);
-
-			if (product.getQuantity() == 0) {
-				return createResponse(null, "Item is out of stock", 200);
-			}
-
-			if (product.getQuantity() < orderDTO.getQuantity()) {
-				String message = String.format(
-						"Insufficient stock available. Only %d items are in stock, but you want to purchase %d.",
-						product.getQuantity(), orderDTO.getQuantity());
-				return createResponse(null, message, 200);
-			}
-
-			int updatedRows = productRepository.updateStock(id, orderDTO.getQuantity(), orderDTO.getQuantity() * -1);
-			log.info("Product has been reserved, stock updated. Rows affected: {}", updatedRows);
-
-			if (updatedRows == 0) {
-				return createResponse(null, "Item is out of stock", 200);
-			}
-
-			return createResponse(true, "Stock updated successfully", 200);
-		} catch (ResourceNotFoundException e) {
-			log.error("Product not found with id {}", orderDTO.getId(), e);
-			return createResponse(null, e.getMessage(), 404);
-		} catch (Exception e) {
-			log.error("An error occurred while updating the stock", e);
-			return createResponse(null, "An error occurred while updating the stock", 500);
+	public BaseResponse<Boolean> updateStock(OrderDto order) throws ResourceNotFoundException {
+		Product product = findProductById(order.getId());
+		if (product.getQuantity() == 0) return createResponse(null, "Item is out of stock", 200);
+		if (product.getQuantity() < order.getQuantity()) {
+			String message = String.format(
+					"Insufficient stock available. Only %d items are in stock, but you want to purchase %d.",
+					product.getQuantity(), order.getQuantity());
+			return createResponse(null, message, 200);
 		}
+		int updatedRows = productRepository.updateStock(order.getId(), order.getQuantity(), order.getQuantity() * -1);
+		log.info("Product has been reserved, stock updated. Rows affected: {}", updatedRows);
+		if (updatedRows == 0) return createResponse(null, "Item is out of stock", 200);
+		return createResponse(true, "Stock updated successfully", 200);
 	}
 
 	private Product findProductById(String id) throws ResourceNotFoundException {

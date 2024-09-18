@@ -1,6 +1,7 @@
 package com.microservice.inventory_service.controller;
 
 
+import com.microservice.inventory_service.Service.ProductService;
 import com.microservice.inventory_service.dto.BaseResponse;
 import com.microservice.inventory_service.dto.OrderDto;
 import com.microservice.inventory_service.entity.Product;
@@ -8,7 +9,6 @@ import com.microservice.inventory_service.exceptions.ResourceNotFoundException;
 import com.microservice.inventory_service.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +28,8 @@ public class ProductController
 	@Autowired
 	private ProductRepository productRepository;
 
+	@Autowired
+	private ProductService productService;
 
 	// Create
 	@PostMapping
@@ -49,41 +51,10 @@ public class ProductController
 	@PatchMapping("/stock")
 	public ResponseEntity<BaseResponse<Boolean>> updateStock(@RequestBody OrderDto orderDTO) throws
 			ResourceNotFoundException {
+		log.info("Received a request to update stock for product: {}", orderDTO.getId());
+		BaseResponse<Boolean> response = productService.updateStock(orderDTO);
+		return ResponseEntity.status(response.getStatusCode()).body(response);
 
-		log.info("Received A Request, updating a stock,Product:{} ",orderDTO.toString() );
-		try {
-			Product p = productRepository.findById(orderDTO.getId())
-					.orElseThrow(() -> {
-						log.error("Product Doesn't exist");
-						return new ResourceNotFoundException("Product doesn't exist");
-					});
-			log.info("Found The Product");
-			if (p.getQuantity() == 0) {
-				log.error("Stock is 0");
-				return ResponseEntity.ok(new BaseResponse<Boolean>(null, "Item is out of stock", 200));
-			} else if (p.getQuantity() < orderDTO.getQuantity()) {
-				log.error(String.format(
-						"Insufficient stock available. Only %d items are in stock, but you want to purchase %d.",
-						p.getQuantity(), orderDTO.getQuantity()));
-				String message = String.format(
-						"Insufficient stock available. Only %d items are in stock, but you want to purchase %d.",
-						p.getQuantity(), orderDTO.getQuantity());
-				return ResponseEntity.ok(new BaseResponse<Boolean>(null, message, 200));
-			}
-
-			int rows = productRepository.updateStock(orderDTO.getId(), orderDTO.isRefund() ? 0 : orderDTO.getQuantity(),
-			                                         orderDTO.getQuantity() * -1);
-			log.info("Product has been Reserve, stock got updated, Rows affected :{}", rows);
-			if (rows == 0) {
-				return ResponseEntity.ok(new BaseResponse<Boolean>(null, "Item is out of stock", 200));
-			}
-
-			return ResponseEntity.ok(new BaseResponse<Boolean>(true, "Stock updated successfully", 200));
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new BaseResponse<Boolean>(null, "An error occurred while updating the stock", 500));
-		}
 	}
 
 	// Read (by id)

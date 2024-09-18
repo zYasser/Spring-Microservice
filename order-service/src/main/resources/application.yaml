@@ -1,9 +1,25 @@
+
 server:
-  port: 0
+  port: 8081
+
+spring:
+  application:
+    name: order-service
+  data:
+    mongodb:
+      uri: mongodb://backendUser:backendUser@localhost:27017/inventory
 
 
-spring :
-    data:
-      mongodb:
-        host: localhost
-        uri: mongodb://root:root@localhost:27017/test
+
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+eureka:
+  ## This will allow us to register multiple instance of same service because since we use 0 as port it going to have duplicate instance id
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
