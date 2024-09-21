@@ -15,5 +15,6 @@ public class BaseResponse<T>
 
 
 	public String message;
+	public String error;
 	public int statusCode;
 }

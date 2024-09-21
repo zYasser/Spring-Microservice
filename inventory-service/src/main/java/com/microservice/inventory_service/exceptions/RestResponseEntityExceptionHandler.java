@@ -22,7 +22,7 @@ public class RestResponseEntityExceptionHandler
 	public ResponseEntity<BaseResponse<Object>> ResourceNotFoundException(ResourceNotFoundException exception,
 	                                                                      WebRequest request) {
 		BaseResponse<Object> errorMessage =
-				new BaseResponse<Object>(null, exception.getMessage(), HttpStatus.NOT_FOUND.value());
+				new BaseResponse<Object>(null, null, exception.getMessage(), HttpStatus.NOT_FOUND.value());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
 	}
 }

@@ -42,32 +42,31 @@ public class InventoryFallbackFactory implements FallbackFactory<InventoryClient
 					String message = getMessageFromException(cause);
 					if (message == null) {
 						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-								.body(new BaseResponse<>(false, "Something went wrong, please try again",
+								.body(new BaseResponse<>(null, null, "Something went wrong, please try again",
 								                         HttpStatus.INTERNAL_SERVER_ERROR.value()));
 
 					}
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-							.body(new BaseResponse<>(false, message,
+							.body(new BaseResponse<>(null, null, message,
 							                         HttpStatus.BAD_REQUEST.value()));
 				} else if (cause instanceof FeignException.NotFound) {
 					String message = getMessageFromException(cause);
 					if (message == null) {
 						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-								.body(new BaseResponse<>(false, "Something went wrong, please try again",
+								.body(new BaseResponse<>(null, null, "Something went wrong, please try again",
 								                         HttpStatus.INTERNAL_SERVER_ERROR.value()));
 
 					}
 					return ResponseEntity.status(HttpStatus.NOT_FOUND)
-							.body(new BaseResponse<>(false, message,
+							.body(new BaseResponse<>(false, null, message,
 							                         HttpStatus.NOT_FOUND.value()));
-
 
 
 				} else {
 					// Handle all other exceptions
 					log.error("Error occurred: {}", cause.getMessage());
 					return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-							.body(new BaseResponse<>(false, "Service Unavailable: " + cause.getMessage(),
+							.body(new BaseResponse<>(false, null, "Service Unavailable: " + cause.getMessage(),
 							                         HttpStatus.SERVICE_UNAVAILABLE.value()));
 				}
 			}
@@ -80,8 +79,7 @@ public class InventoryFallbackFactory implements FallbackFactory<InventoryClient
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonNode = mapper.readTree(responseBody);
-			String message = jsonNode.get("message").asText();
-			return message;
+			return jsonNode.get("message").asText();
 
 		} catch (JsonProcessingException e) {
 			log.error("Error parsing response body", e);
