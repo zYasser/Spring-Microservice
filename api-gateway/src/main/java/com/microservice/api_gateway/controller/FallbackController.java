@@ -14,7 +14,7 @@ public class FallbackController {
 
     @GetMapping("/inventory")
     public ResponseEntity<String> fallbackInventoryService() {
-        return new ResponseEntity<>("The inventory service is not available now, please try again later", HttpStatus.SERVICE_UNAVAILABLE);
+        return new ResponseEntity<String>("The inventory service is not available now, please try again later", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
 }

@@ -5,9 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservice.order_service.dto.BaseResponse;
 import com.microservice.order_service.dto.OrderDto;
+import com.microservice.order_service.entity.Order;
 import com.microservice.order_service.feignClient.InventoryClient;
 import com.microservice.order_service.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -22,49 +24,46 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/api/order")
 @Slf4j
-public class OrderController
-{
+public class OrderController {
 
 
-	private final KafkaTemplate<String, OrderDto> kafkaTemplate;
+    private final KafkaTemplate<String, OrderDto> kafkaTemplate;
 
-	private final OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-	private final InventoryClient inventoryClient;
+    private final InventoryClient inventoryClient;
 
-	public OrderController(KafkaTemplate kafkaTemplate, OrderRepository orderRepository,
-	                       InventoryClient inventoryClient) {
-		this.kafkaTemplate = kafkaTemplate;
-		this.orderRepository = orderRepository;
-		this.inventoryClient = inventoryClient;
-	}
+    public OrderController(KafkaTemplate kafkaTemplate, OrderRepository orderRepository, InventoryClient inventoryClient) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.orderRepository = orderRepository;
+        this.inventoryClient = inventoryClient;
+    }
 
-	@PostMapping
-	public void placeOrder(@RequestBody OrderDto order) throws JsonProcessingException {
-		log.info("received request with id:{} Sending Request to inventory service , with quantity: {}", order.getId(),
-		         order.getQuantity());
+    @PostMapping
+    public void placeOrder(@RequestBody OrderDto order) throws JsonProcessingException {
+        log.info("received request with id:{} Sending Request to inventory service , with quantity: {}", order.getProductId(), order.getQuantity());
 //		ResponseEntity<BaseResponse<Boolean>> orderResponseEntity =
 //				inventoryClient.reserveProduct(order);
-		UUID uuid = UUID.randomUUID();
-		String uuidAsString = uuid.toString();
+        UUID uuid = UUID.randomUUID();
+        String uuidAsString = uuid.toString();
 //		ObjectMapper objectMapper = new ObjectMapper();
 //		String jsonValue = objectMapper.writeValueAsString(order);
 
+        Order order1 = Order.builder().price((float) (Math.random() * 10000)).productId(order.getProductId()).build();
+        orderRepository.save(order1);
+        order.setId(order1.getId());
+        CompletableFuture<SendResult<String, OrderDto>> event = kafkaTemplate.send("orders", order.getId(), order);
+        event.whenComplete((result, err) -> {
+            System.out.println("result = " + result);
+            if (err != null) {
+                System.out.println(" =============================================================== ");
+                System.out.println("error = " + err);
+            }
+            System.out.println("Order has been sent to message broker waiting to get consumed");
+        });
 
 
-		CompletableFuture<SendResult<String, OrderDto>> event =
-				kafkaTemplate.send("orders", uuidAsString, order);
-		event.whenComplete((result, err) -> {
-			System.out.println("result = " + result);
-			if (err != null) {
-				System.out.println(" =============================================================== " );
-				System.out.println("error = " + err)
-				;
-			}
-		});
-
-
-	}
+    }
 
 
 }
