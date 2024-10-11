@@ -1,7 +1,7 @@
 package com.microservice.inventory_service.controller;
 
 
-import com.microservice.inventory_service.Service.ProductService;
+import com.microservice.inventory_service.service.ProductService;
 import com.microservice.inventory_service.dto.BaseResponse;
 import com.microservice.inventory_service.dto.OrderDto;
 import com.microservice.inventory_service.entity.Product;

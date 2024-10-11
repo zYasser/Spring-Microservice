@@ -22,5 +22,6 @@ public class Order
 
 	private String productId;
 
+	private OrderStatus status;
 
 }

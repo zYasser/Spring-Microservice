@@ -1,6 +1,6 @@
 package com.microservice.inventory_service.event;
 
-import com.microservice.inventory_service.Service.ProductService;
+import com.microservice.inventory_service.service.ProductService;
 import com.microservice.inventory_service.dto.OrderDto;
 import com.microservice.inventory_service.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
