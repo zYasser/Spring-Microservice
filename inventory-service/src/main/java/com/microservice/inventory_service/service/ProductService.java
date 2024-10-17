@@ -3,29 +3,26 @@ package com.microservice.inventory_service.service;
 import com.microservice.inventory_service.dto.BaseResponse;
 import com.microservice.inventory_service.dto.OrderDto;
 import com.microservice.inventory_service.entity.Product;
+import com.microservice.inventory_service.event.OrderEventProducer;
 import com.microservice.inventory_service.exceptions.ResourceNotFoundException;
 import com.microservice.inventory_service.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
 public class ProductService {
 
 
-    private final KafkaTemplate<String, OrderDto> kafkaTemplate;
-
     private final ProductRepository productRepository;
 
-    public ProductService(KafkaTemplate<String, OrderDto> kafkaTemplate, ProductRepository productRepository) {
-        this.kafkaTemplate = kafkaTemplate;
+    private final OrderEventProducer orderEventProducer;
+
+    public ProductService(ProductRepository productRepository, OrderEventProducer orderEventProducer) {
         this.productRepository = productRepository;
+        this.orderEventProducer = orderEventProducer;
     }
 
     public BaseResponse<Boolean> updateStock(OrderDto order) throws ResourceNotFoundException {
@@ -79,16 +76,9 @@ public class ProductService {
                     product.getQuantity(), order.getQuantity());
 
             log.error("Item {} out of stock, Issuing refund on order with id: {}", order.getProductId(), order.getId());
+
             order.setRefund(true);
-            CompletableFuture<SendResult<String, OrderDto>> event = kafkaTemplate.send("order-status", order.getId(), order);
-            event.whenComplete((res, err) -> {
-                System.out.println(" Result = " + res);
-                if (err != null) {
-                    System.out.println(" =============================================================== ");
-                    System.out.println("error = " + err);
-                }
-                System.out.println("Order has been sent to message broker waiting to get consumed");
-            });
+            orderEventProducer.issueRefundEvent(order);
 
             return;
         }

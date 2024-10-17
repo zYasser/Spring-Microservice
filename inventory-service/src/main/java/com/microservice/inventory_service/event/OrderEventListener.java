@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class OrderEvent
+public class OrderEventListener
 {
 
 	private final ProductService productService;
 
-    public OrderEvent(ProductService productService) {
+    public OrderEventListener(ProductService productService) {
         this.productService = productService;
     }
 

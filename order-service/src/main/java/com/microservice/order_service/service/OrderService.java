@@ -31,6 +31,7 @@ public class OrderService {
         System.out.println("order1 = " + order1);
         request.setId(order1.getId());
         CompletableFuture<SendResult<String, OrderDto>> event = kafkaTemplate.send("orders", request.getId(), request);
+        log.info("Order ");
         event.whenComplete((result, err) -> {
             System.out.println("result = " + result);
             if (err != null) {
