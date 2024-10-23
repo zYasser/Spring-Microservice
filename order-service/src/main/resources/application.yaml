@@ -12,8 +12,9 @@ spring:
 
 
   kafka:
+    bootstrap-servers: localhost:9092
+
     producer:
-      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
@@ -30,7 +31,7 @@ spring:
       properties:
         spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.json.value.default.type: com.microservice.order-service.dto.OrderDto
+        spring.json.value.default.type: com.microservice.order_service.dto.OrderDto
         spring.json.trusted.packages: "*"
         spring.json.remove.type.headers: true
 

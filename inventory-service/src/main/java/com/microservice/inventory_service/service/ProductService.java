@@ -18,6 +18,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+
+
     private final OrderEventProducer orderEventProducer;
 
     public ProductService(ProductRepository productRepository, OrderEventProducer orderEventProducer) {
