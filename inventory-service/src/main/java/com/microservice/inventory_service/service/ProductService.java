@@ -39,7 +39,7 @@ public class ProductService {
                     product.getQuantity(), order.getQuantity());
             return new BaseResponse<Boolean>(null, null, message, 200);
         }
-        int updatedRows = productRepository.updateStock(order.getProductId(), order.getQuantity(), order.getQuantity() * -1);
+        int updatedRows = productRepository.decrementProductQuantityIfAvailable(order.getProductId(), order.getQuantity());
         log.info("Product has been reserved, stock updated. Rows affected: {}", updatedRows);
         if (updatedRows == 0) return new BaseResponse<Boolean>(null, null, "Item is out of stock", 200);
 
@@ -54,7 +54,7 @@ public class ProductService {
             return;
         }
         Product product = result.get();
-        int updatedRows = productRepository.updateStock(order.getProductId(), order.getQuantity(), order.getQuantity());
+        int updatedRows = productRepository.updateStock(order.getProductId(), order.getQuantity());
         log.info("Product quantity has been updated, stock updated. Rows affected: {}", updatedRows);
         if (updatedRows == 0) {
             log.info("Something went wrong , Failed To update stock product: {} doesn't exist", order.getProductId());
@@ -84,7 +84,7 @@ public class ProductService {
 
             return;
         }
-        int updatedRows = productRepository.updateStock(order.getProductId(), order.getQuantity(), order.getQuantity() * -1);
+        int updatedRows = productRepository.decrementProductQuantityIfAvailable(order.getProductId(), order.getQuantity() );
         log.info("Product has been reserved, stock updated. Rows affected: {}", updatedRows);
         if (updatedRows == 0) {
             log.info("Something went wrong , Failed To update stock product: {} doesn't exist", order.getProductId());

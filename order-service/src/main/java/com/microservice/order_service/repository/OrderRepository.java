@@ -2,9 +2,9 @@ package com.microservice.order_service.repository;
 
 
 import com.microservice.order_service.entity.Order;
-import org.springframework.data.mongodb.core.annotation.Collation;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Collation
-public interface OrderRepository extends MongoRepository<Order, String> {
+
+public interface OrderRepository extends JpaRepository<Order,String>
+{
 }

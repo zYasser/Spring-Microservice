@@ -2,16 +2,17 @@ package com.microservice.inventory_service.repository;
 
 
 import com.microservice.inventory_service.entity.Product;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.mongodb.repository.Update;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface ProductRepository extends MongoRepository<Product, String>
+public interface ProductRepository extends JpaRepository<Product, String>
 {
 
+	@Query("UPDATE products SET quantity = quantity - :quantity WHERE id = :id AND quantity >= :quantity")
+	int decrementProductQuantityIfAvailable(String id, int quantity );
 
-	@Query("{ '_id' : ObjectId(?0), 'quantity' : { $gte : ?1 } }")
-	@Update("{ $inc : { 'quantity' :  ?2 } }")
-	int updateStock(String id, int quantity , int decrease);
+	@Query("UPDATE products SET quantity = quantity + :quantity WHERE id = :id")
+	int updateStock(String id, int quantity );
+
+
 }

@@ -38,6 +38,13 @@ public class ProductController
 		return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
 	}
 
+
+	@PostMapping("/add-all")
+	public ResponseEntity<List<String>> createProducts(@RequestBody List<Product> products){
+		productRepository.saveAll(products);
+		return new ResponseEntity<List<String>>(products.stream().map(Product::getId).toList(), HttpStatus.CREATED);
+	}
+
 	// Read (all)
 	@GetMapping
 	public ResponseEntity<List<Product>> getAllProducts() throws InterruptedException {

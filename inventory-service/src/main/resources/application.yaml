@@ -1,13 +1,18 @@
 
 server:
-  port: 9395
+  port: 8880
 
 spring:
+
   application:
     name: inventory-service
-  data:
-    mongodb:
-      uri: mongodb://backendUser:backendUser@localhost:27017/inventory
+  datasource:
+    url: jdbc:postgresql://localhost:5432/EShop
+    username: postgres
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -38,6 +43,9 @@ spring:
 
 
 
+  cloud:
+    discovery:
+      enabled: false
 eureka:
   ## This will allow us to register multiple instance of same service because since we use 0 as port it going to have duplicate instance id
   instance:
@@ -49,6 +57,4 @@ eureka:
 
 
 
-logging:
-  level:
-    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+

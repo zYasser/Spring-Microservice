@@ -5,9 +5,14 @@ server:
 spring:
   application:
     name: order-service
-  data:
-    mongodb:
-      uri: mongodb://backendUser:backendUser@localhost:27017/inventory
+  datasource:
+      url: jdbc:postgresql://localhost:5432/EShop
+      username: postgres
+      password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+
 
 
 

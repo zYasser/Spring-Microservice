@@ -1,16 +1,14 @@
 package com.microservice.order_service.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.math.BigInteger;
 
 
 @Builder
-@Document("orders")
+@Entity(name = "orders")
 @ToString
 @Data
 public class Order
