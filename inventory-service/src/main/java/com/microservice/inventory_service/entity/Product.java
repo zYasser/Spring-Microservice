@@ -24,7 +24,7 @@ public class Product {
 
 
     private String name;
-    private String price;
+    private float price;
     private String description;
 
     private String brandId;

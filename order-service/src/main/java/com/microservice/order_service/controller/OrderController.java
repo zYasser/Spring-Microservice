@@ -18,6 +18,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -39,6 +40,10 @@ public class OrderController {
         log.info("received request with id:{} Sending Request to inventory service , with quantity: {}", order.getProductId(), order.getQuantity());
         orderService.saveOrder(order);
 
+    }
+    @GetMapping
+    public List<Order> getAllOrder(){
+        return orderService.getAllOrders();
     }
 
 

@@ -6,6 +6,7 @@ import com.microservice.inventory_service.entity.Product;
 import com.microservice.inventory_service.event.OrderEventProducer;
 import com.microservice.inventory_service.exceptions.ResourceNotFoundException;
 import com.microservice.inventory_service.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +64,7 @@ public class ProductService {
 
 
     }
-
+    @Transactional
     public void orderEvent(OrderDto order) throws ResourceNotFoundException {
         Optional<Product> result = productRepository.findById(order.getProductId());
         if (result.isEmpty()) {
