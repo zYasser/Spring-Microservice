@@ -19,7 +19,7 @@ public class OrderEventListener
         this.productService = productService;
     }
 
-    @KafkaListener(groupId = "group-1", topics = "orders" , concurrency = "1")
+    @KafkaListener(groupId = "group-1", topics = "orders" , concurrency = "1" , properties = {"spring.json.value.default.type: com.microservice.inventory_service.dto.OrderDto"})
 	public void consume(@Payload OrderDto order) throws ResourceNotFoundException {
 		log.info("We received the Order : {}", order);
 		productService.orderEvent(order);
