@@ -2,49 +2,51 @@ package com.microservice.order_service.controller;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microservice.order_service.dto.BaseResponse;
 import com.microservice.order_service.dto.OrderDto;
 import com.microservice.order_service.entity.Order;
-import com.microservice.order_service.entity.OrderStatus;
-import com.microservice.order_service.feignClient.InventoryClient;
-import com.microservice.order_service.repository.OrderRepository;
 import com.microservice.order_service.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/order")
 @Slf4j
-public class OrderController {
+public class OrderController
+{
 
 
-    private final OrderService orderService;
+	private final OrderService orderService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
+	public OrderController(OrderService orderService) {
+		this.orderService = orderService;
+	}
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void placeOrder(@RequestBody OrderDto order) throws JsonProcessingException {
-        log.info("received request with id:{} Sending Request to inventory service , with quantity: {}", order.getProductId(), order.getQuantity());
-        orderService.saveOrder(order);
+	@PostMapping
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public void placeOrder(@RequestBody OrderDto order) throws JsonProcessingException {
+		log.info("received request with id:{} Sending Request to inventory service , with quantity: {}",
+		         order.getProductId(), order.getQuantity());
+		orderService.saveOrder(order);
 
-    }
-    @GetMapping
-    public List<Order> getAllOrder(){
-        return orderService.getAllOrders();
-    }
+	}
+
+	@GetMapping
+	public List<Order> getAllOrder() {
+		return orderService.getAllOrders();
+	}
+
+	@GetMapping
+	public ResponseEntity<Boolean> isAvailable(@RequestBody OrderDto order) {
+		log.info(
+				"received request to isAvailable Method with id:{} Sending Request to inventory service , with quantity: {}",
+				order.getProductId(), order.getQuantity());
+		boolean result = orderService.checkQuantity(order);
+		return ResponseEntity.status(200).body(result);
+	}
 
 
 }

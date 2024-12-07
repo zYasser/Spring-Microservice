@@ -10,6 +10,7 @@
         <module name="inventory_service" />
         <module name="api-gateway" />
         <module name="order-service" />
+        <module name="grpc-Interface" />
         <module name="service-discovery" />
       </profile>
     </annotationProcessing>
@@ -17,6 +18,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
+      <module name="grpc-Interface" options="-parameters" />
       <module name="inventory_service" options="-parameters" />
       <module name="order-service" options="-parameters" />
       <module name="service-discovery" options="-parameters" />

@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>org.example</groupId>
+		<artifactId>grpc-Interface</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath></relativePath>
 	</parent>
 	<groupId>com.microservice</groupId>
 	<artifactId>inventory_service</artifactId>
@@ -33,12 +33,17 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>org.example</groupId>
+			<artifactId>grpc-Interface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
@@ -90,6 +95,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
