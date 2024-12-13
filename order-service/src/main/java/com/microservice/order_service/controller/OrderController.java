@@ -39,7 +39,7 @@ public class OrderController
 		return orderService.getAllOrders();
 	}
 
-	@GetMapping
+	@PostMapping("/available")
 	public ResponseEntity<Boolean> isAvailable(@RequestBody OrderDto order) {
 		log.info(
 				"received request to isAvailable Method with id:{} Sending Request to inventory service , with quantity: {}",

@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Spring-Microservice.iml" filepath="$PROJECT_DIR$/.idea/Spring-Microservice.iml" />
-      <module fileurl="file://$PROJECT_DIR$/grpc-Interface.iml" filepath="$PROJECT_DIR$/grpc-Interface.iml" />
+      <module fileurl="file://$PROJECT_DIR$/grpc-Interface/grpc-Interface.iml" filepath="$PROJECT_DIR$/grpc-Interface/grpc-Interface.iml" />
     </modules>
   </component>
 </project>

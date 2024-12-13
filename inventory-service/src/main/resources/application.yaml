@@ -1,7 +1,9 @@
 
 server:
   port: 8880
-
+grpc:
+  server:
+    port: 5931
 spring:
   cloud:
     discovery:
@@ -51,13 +53,16 @@ management:
 
 
 eureka:
-
   ## This will allow us to register multiple instance of same service because since we use 0 as port it going to have duplicate instance id
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    metadata-map:
+      grpc-server: localhost
+      grpc-port: 5931
 
+  ## This will allow us to register multiple instance of same service because since we use 0 as port it going to have duplicate instance id
   client:
-    enabled: false
+    enabled: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 

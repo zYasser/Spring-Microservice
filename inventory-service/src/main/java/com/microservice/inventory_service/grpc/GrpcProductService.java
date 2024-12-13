@@ -5,13 +5,17 @@ import com.microservice.grpc.CheckQuantityResponse;
 import com.microservice.grpc.InventoryServiceGrpc;
 import com.microservice.inventory_service.entity.Product;
 import com.microservice.inventory_service.repository.ProductRepository;
+import com.netflix.discovery.EurekaClient;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
 @GrpcService
+@Slf4j
 public class GrpcProductService extends InventoryServiceGrpc.InventoryServiceImplBase
 {
 	private final ProductRepository productRepository;
@@ -22,6 +26,7 @@ public class GrpcProductService extends InventoryServiceGrpc.InventoryServiceImp
 
 	@Override
 	public void checkQuantity(CheckQuantityRequest request, StreamObserver<CheckQuantityResponse> responseObserver) {
+		log.info("Received Request");
 		Optional<Product> result = productRepository.findById(request.getProductId());
 		if (result.isEmpty()) {
 			responseObserver.onError(

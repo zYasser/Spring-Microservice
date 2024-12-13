@@ -6,8 +6,10 @@ import com.microservice.inventory_service.entity.Product;
 import com.microservice.inventory_service.event.OrderEventProducer;
 import com.microservice.inventory_service.exceptions.ResourceNotFoundException;
 import com.microservice.inventory_service.repository.ProductRepository;
+import com.netflix.discovery.EurekaClient;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

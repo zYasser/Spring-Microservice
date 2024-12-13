@@ -58,12 +58,21 @@ public class OrderService
 
 	public boolean checkQuantity(OrderDto request) {
 		try {
+			System.out.println("request = " + request);
 			CheckQuantityResponse result = inventoryServiceBlockingStub.checkQuantity(
 					CheckQuantityRequest.newBuilder().setQuantity(request.getQuantity())
 							.setProductId(request.getProductId()).build());
+			
 		} catch (StatusRuntimeException e) {
-			System.out.println("e.getMessage() = " + e.getMessage() + "Status Error " + e.getStatus());
+			log.error("e.getMessage() = {}Status Error {}", e.getMessage(), e.getStatus());
+			return false;
 		}
+		catch (Exception e) {
+			log.error("e.getMessage() = {}Status Error {}", e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+
 
 
 		return true;
